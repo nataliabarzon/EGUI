@@ -39,8 +39,7 @@ export class UserController {
   }
 
   @Post()
-  @Roles(Role.Librarian, Role.User)
-
+  // @Roles(Role.Librarian, Role.User)
   @ApiOperation({ summary: 'Create a new user' })
   @ApiBody({ type: CreateUserDto })
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
@@ -80,7 +79,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @Roles(Role.Librarian, Role.User)
+  @Roles(Role.Librarian)
   @ApiOperation({ summary: 'Delete a user' })
   @ApiParam({ name: 'id', type: 'number' })
   async delete(@Param('id') id: number): Promise<void> {

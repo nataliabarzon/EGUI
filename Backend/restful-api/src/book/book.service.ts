@@ -75,9 +75,9 @@ import {
     rentBook(id: string) {
       const book = this.findBookById(id);
   
-      if (book.isRented) {
-        throw new BadRequestException(`Book with ID ${id} is already rented`);
-      }
+      // if (book.isRented) {
+      //   throw new BadRequestException(`Book with ID ${id} is already rented`);
+      // }
   
       if (book.isReserved) {
         throw new BadRequestException(

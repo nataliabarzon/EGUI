@@ -5,9 +5,6 @@ import { Role } from '../constants/roles.enum';
 
 @Entity()
 export class User {
-
-  
-
   @PrimaryGeneratedColumn()
   @ApiProperty({ description: 'Unique identifier for the user' })
   id: number;
@@ -30,6 +27,5 @@ export class User {
 
   @Column({ default: Role.User })  
   role: Role;
-
 
 }

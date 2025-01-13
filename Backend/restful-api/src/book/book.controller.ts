@@ -1,26 +1,22 @@
-import {
-    Controller,
-    Get,
-    Post,
-    Patch,
-    Delete,
-    Body,
-    Param,
-    UseGuards,
-  } from '@nestjs/common';
+  import {Controller,Get,Post,Patch,Delete,Body,Param,UseGuards} from '@nestjs/common';
   import { BookService } from './book.service';
   import { ApiBearerAuth, ApiTags, ApiBody } from '@nestjs/swagger';
   import { RolesGuard } from 'src/auth/roles.guard';
   import { CreateBookDto, UpdateBookDto } from './dto/book.dto';
-  
+  import { Roles } from '../decorators/role.decorator';
+  import { Role } from 'src/constants/roles.enum';
+
   @ApiTags('books')
   @ApiBearerAuth()
   @UseGuards(RolesGuard)
   @Controller('books')
   export class BookController {
-    constructor(private readonly bookService: BookService) {}
+    constructor(
+      private readonly bookService: BookService
+    ) {}
   
     @Post()
+    @Roles(Role.Librarian)
     @ApiBody({
       description: 'Request body to create a new book',
       type: CreateBookDto,
@@ -53,6 +49,7 @@ import {
     }
   
     @Patch(':id')
+    @Roles(Role.Librarian)
     @ApiBody({
       description: 'Request body to update an existing book',
       type: UpdateBookDto,
@@ -81,6 +78,7 @@ import {
     }
   
     @Delete(':id')
+    @Roles(Role.Librarian)
     deleteBook(@Param('id') id: string) {
       return this.bookService.deleteBook(id, 'Librarian');
     }

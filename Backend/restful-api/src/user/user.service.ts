@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -10,6 +10,12 @@ export class UserService {
     @InjectRepository(User)
     private usersRepository: Repository<User>,
   ) {}
+
+  private checkLibrarianRole(role: string) {
+        if (role !== 'Librarian') {
+          throw new ForbiddenException('Access denied. Only librarians can perform this action.');
+        }
+      }
 
   async findAll(): Promise<User[]> {
     return await this.usersRepository.find({ relations: [] });

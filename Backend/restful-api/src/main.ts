@@ -17,7 +17,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Natalia Barzon API')
-    .setDescription('no words that can describe it')
+    .setDescription('EGUI project')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
