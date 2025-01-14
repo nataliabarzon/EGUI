@@ -21,7 +21,7 @@ export class BookService {
   ) {}
 
   private checkLibrarianRole(role: string) {
-    if (role !== 'Librarian') {
+    if (role !== 'librarian') {
       throw new ForbiddenException('Access denied. Only librarians can perform this action.');
     }
   }

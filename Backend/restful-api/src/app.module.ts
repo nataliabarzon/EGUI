@@ -38,7 +38,7 @@ import { Book } from './book/book.entity';
       inject: [ConfigService],
     }),
 
-    AuthModule, UserModule, BookModule, ScheduleModule.forRoot(),
+    TypeOrmModule.forFeature([Book]), AuthModule, UserModule, BookModule, ScheduleModule.forRoot(),
 
   ],
   controllers: [AppController, BookController],
