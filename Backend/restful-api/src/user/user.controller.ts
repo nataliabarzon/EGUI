@@ -1,7 +1,7 @@
 import {Controller,Get,Post,Body,Param,Delete,Put,UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User as UserEntity } from './user.entity';
-import {ApiTags, ApiOperation, ApiParam, ApiBody, ApiBearerAuth} from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiBearerAuth} from '@nestjs/swagger';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../decorators/role.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -39,7 +39,6 @@ export class UserController {
   }
 
   @Post()
-  // @Roles(Role.Librarian, Role.User)
   @ApiOperation({ summary: 'Create a new user' })
   @ApiBody({ type: CreateUserDto })
   async create(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {

@@ -12,6 +12,7 @@ import { BookController } from './book/book.controller';
 import { BookService } from './book/book.service';
 import { BookModule } from './book/book.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { Book } from './book/book.entity';
 
 
 @Module({
@@ -27,7 +28,7 @@ import { ScheduleModule } from '@nestjs/schedule';
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         url: process.env.DATABASE_URL, 
-        entities: [ User], 
+        entities: [Book, User], 
         migrations: [__dirname + '/migrations/**/*.ts'], 
         synchronize: true, 
         ssl: {
