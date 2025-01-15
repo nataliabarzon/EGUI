@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { AnimatedBackground } from '@/components/AnimatedBackground';
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
@@ -55,8 +56,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center text-white">
+      <AnimatedBackground />
+      <Card className="w-full max-w-md bg-black/30 border-gray-700 backdrop-blur-sm" >
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Register</CardTitle>
           <CardDescription>Create a new account to get started</CardDescription>

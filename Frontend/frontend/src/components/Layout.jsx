@@ -36,10 +36,10 @@ export default function Layout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <nav className="bg-primary text-primary-foreground shadow-md">
+      <nav className="bg-primary text-primary-foreground bg-black shadow-md">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold hover:text-primary-foreground/80 transition-colors">
-            Library Management Project
+            Library Management
           </Link>
           <div className="flex items-center space-x-4">
             {user ? (
@@ -79,7 +79,7 @@ export default function Layout({ children }) {
       </main>
       <footer className="bg-muted text-muted-foreground py-4">
         <div className="container mx-auto px-4 text-center">
-          © {new Date().getFullYear()} Your App Name. All rights reserved.
+          © {new Date().getFullYear()} EGUI by Natalia Barzon. All rights reserved.
         </div>
       </footer>
     </div>

@@ -54,12 +54,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+    <div className="min-h-screen flex items-center justify-center text-white ">
       <AnimatedBackground />
-      <Card className="w-full max-w-md bg-black/50 border-gray-800">
+      <Card className="w-full max-w-md bg-black/30 border-gray-700 backdrop-blur-sm ">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-white">Login</CardTitle>
-          <CardDescription className="text-gray-400">Enter your credentials to access your account</CardDescription>
+          <CardDescription className="text-gray-300">Enter your credentials to access your account</CardDescription>
         </CardHeader>
         <CardContent>
           {error && (
@@ -69,7 +69,7 @@ export default function LoginPage() {
           )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-300">Email</Label>
+              <Label htmlFor="email" className="text-gray-200">Email</Label>
               <Input
                 id="email"
                 name="email"
@@ -78,11 +78,11 @@ export default function LoginPage() {
                 onChange={handleChange}
                 required
                 placeholder="Enter your email"
-                className="bg-gray-900 border-gray-700 text-white placeholder-gray-500"
+                className="bg-black/50 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-300">Password</Label>
+              <Label htmlFor="password" className="text-gray-200">Password</Label>
               <Input
                 id="password"
                 name="password"
@@ -91,18 +91,18 @@ export default function LoginPage() {
                 onChange={handleChange}
                 required
                 placeholder="Enter your password"
-                className="bg-gray-900 border-gray-700 text-white placeholder-gray-500"
+                className="bg-black/50 border-gray-600 text-white placeholder-gray-400"
               />
             </div>
-            <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700" disabled={isLoading}>
+            <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 transition-colors" disabled={isLoading}>
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-300">
             Don't have an account?{' '}
-            <a href="/signup" className="text-indigo-400 hover:underline">
+            <a href="/register" className="text-indigo-600 hover:underline">
               Sign up
             </a>
           </p>
