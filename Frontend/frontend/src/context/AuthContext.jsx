@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
   const router = useRouter();
 
   
-  // Optional: Function to refresh user data
   const refreshUser = async () => {
     setLoading(true);
     try {
