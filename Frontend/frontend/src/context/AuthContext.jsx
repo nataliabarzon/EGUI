@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
   const refreshUser = async () => {
     setLoading(true);
     try {
-      const res = await fetch('https://psqlnestreactrender.onrender.com', {
+      const res = await fetch('https://egui.onrender.com', {
         method: 'GET',
         credentials: 'include',
       });

@@ -26,7 +26,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
+  
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -36,12 +36,16 @@ export default function LoginPage() {
         body: JSON.stringify(form),
         credentials: 'include', // Include cookies in the request
       });
-
+  
       const data = await res.json();
-
+      console.log(data, res.ok); // Debugging: Log response to confirm success
+  
       if (res.ok) {
-        // Login successful, redirect to dashboard
-        router.push('/dashboard');
+        // Update the user in AuthContext (or equivalent method)
+        // Example:
+        // authContext.setUser(data.user); // Ensure you have this in your AuthContext
+        
+        router.push('/dashboard'); // Redirect to the dashboard
       } else {
         setError(data.message || 'Login failed.');
       }
@@ -52,11 +56,12 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center text-white ">
       <AnimatedBackground />
-      <Card className="w-full max-w-md bg-black/30 border-gray-700 backdrop-blur-sm ">
+      <Card className="w-full max-w-md bg-black/30 border-gray-700 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-white">Login</CardTitle>
           <CardDescription className="text-gray-300">Enter your credentials to access your account</CardDescription>
