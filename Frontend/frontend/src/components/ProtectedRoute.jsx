@@ -11,10 +11,10 @@ export default function ProtectedRoute({ children, requiredRole }) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        // Not authenticated, redirect to login
+
         router.push('/auth/login');
       } else if (requiredRole && user.role !== requiredRole) {
-        // User does not have the required role
+        
         router.push('/unauthorized');
       }
     }
@@ -25,11 +25,11 @@ export default function ProtectedRoute({ children, requiredRole }) {
   }
 
   if (!user) {
-    return null; // Redirecting...
+    return null; 
   }
 
   if (requiredRole && user.role !== requiredRole) {
-    return null; // Redirecting...
+    return null; 
   }
 
   return <>{children}</>;
