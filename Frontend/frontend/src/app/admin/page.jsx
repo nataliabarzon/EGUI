@@ -1,7 +1,7 @@
 'use client';
 
-import ProtectedRoute from '../../components/ProtectedRoute';
-import { useAuth } from '../../context/AuthContext';
+import ProtectedRoute from '../protected-route';
+import { useAuth } from '../context/AuthContext';
 
 export default function AdminPage() {
   const { user } = useAuth();

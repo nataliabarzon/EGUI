@@ -1,5 +1,4 @@
-import { AuthProvider } from '../context/AuthContext';
-// import Layout from '../components/Layout';
+import { AuthProvider } from './context/AuthContext';
 import './globals.css'
 import { Inter } from 'next/font/google'
 
@@ -13,12 +12,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang='en'>
-   
       <body className={inter.className}>
         <AuthProvider>
-          {/* <Layout> */}
             {children}
-          {/* </Layout> */}
         </AuthProvider>
       </body>
     </html>
