@@ -16,7 +16,6 @@ export class BookController {
   ) {}
 
   @Post()
-  @Roles(Role.Librarian)
   @ApiBody({
     description: 'Request body to create a new book',
     type: CreateBookDto,
@@ -35,7 +34,7 @@ export class BookController {
     },
   })
   createBook(@Body() createBookDto: CreateBookDto) {
-    return this.bookService.createBook(createBookDto, Role.Librarian);
+    return this.bookService.createBook(createBookDto);
   }
 
   @Get()
@@ -49,7 +48,6 @@ export class BookController {
   }
 
   @Patch(':id')
-  @Roles(Role.Librarian)
   @ApiBody({
     description: 'Request body to update an existing book',
     type: UpdateBookDto,
@@ -75,13 +73,12 @@ export class BookController {
     @Param('id') id: string,
     @Body() updateBookDto: UpdateBookDto,
   ) {
-    return this.bookService.updateBook(id, updateBookDto, Role.Librarian);
+    return this.bookService.updateBook(id, updateBookDto);
   }
 
   @Delete(':id')
-  @Roles(Role.Librarian)
   deleteBook(@Param('id') id: string) {
-    return this.bookService.deleteBook(id, Role.Librarian);
+    return this.bookService.deleteBook(id);
   }
 
   @Post(':id/reserve')

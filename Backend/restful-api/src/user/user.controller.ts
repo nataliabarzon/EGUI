@@ -2,7 +2,6 @@ import {Controller,Get,Post,Body,Param,Delete,Put,UseGuards} from '@nestjs/commo
 import { UserService } from './user.service';
 import { User as UserEntity } from './user.entity';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiBearerAuth} from '@nestjs/swagger';
-import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../decorators/role.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,21 +11,18 @@ import { Role } from 'src/constants/roles.enum';
 @ApiTags('users')
 @Controller('users')
 @ApiBearerAuth()
-@UseGuards(RolesGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService,
   ) {}
 
   @Get()
-  
   @ApiOperation({ summary: 'Get all users' })
   async findAll(): Promise<UserEntity[]> {
     return await this.userService.findAll();
   }
 
   @Get(':id')
-  @Roles(Role.Librarian, Role.User)
 
   @ApiOperation({ summary: 'Get a user by ID' })
   @ApiParam({ name: 'id', type: 'number' })
@@ -55,7 +51,6 @@ export class UserController {
   }
 
   @Put(':id')
-  @Roles(Role.Librarian, Role.User)
   @ApiOperation({ summary: 'Update a user' })
   @ApiParam({ name: 'id', type: 'number' })
   @ApiBody({ type: UpdateUserDto })

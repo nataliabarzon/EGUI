@@ -20,29 +20,26 @@ export class BookService {
     private readonly bookRepository: Repository<Book>,
   ) {}
 
-  private checkLibrarianRole(role: string) {
-    if (role !== 'librarian') {
-      throw new ForbiddenException('Access denied. Only librarians can perform this action.');
-    }
-  }
+  // private checkLibrarianRole(role: string) {
+  //   if (role !== 'librarian') {
+  //     throw new ForbiddenException('Access denied. Only librarians can perform this action.');
+  //   }
+  // }
 
-  async createBook(createBookDto: CreateBookDto, role: string) {
-    this.checkLibrarianRole(role);
+  async createBook(createBookDto: CreateBookDto) {
     const newBook = this.bookRepository.create(createBookDto);
     await this.bookRepository.save(newBook);
     return { message: 'Book created successfully', book: newBook };
   }
 
-  async updateBook(id: string, updateBookDto: UpdateBookDto, role: string) {
-    this.checkLibrarianRole(role);
+  async updateBook(id: string, updateBookDto: UpdateBookDto) {
     const book = await this.findBookById(id);
     Object.assign(book, updateBookDto);
     await this.bookRepository.save(book);
     return { message: `Book with ID ${id} updated successfully`, book };
   }
 
-  async deleteBook(id: string, role: string) {
-    this.checkLibrarianRole(role);
+  async deleteBook(id: string) {
     const result = await this.bookRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Book with ID ${id} not found`);
