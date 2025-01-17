@@ -14,8 +14,6 @@ const ProtectedRoute = ({ children }) => {
     }
   }, [token, router]);
 
-  
-
   return <>{children}</>;
 };
 
