@@ -1,12 +1,7 @@
-<<<<<<< HEAD
 "use client";
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-=======
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
->>>>>>> 47ce4c2454243706d1e690d6a0558600e132a417
 
 export function Header() {
   const handleLogout = () => {
@@ -41,10 +36,5 @@ export function Header() {
         </nav>
       </div>
     </header>
-<<<<<<< HEAD
   )
 }
-=======
-  );
-}
->>>>>>> 47ce4c2454243706d1e690d6a0558600e132a417
