@@ -1,5 +1,5 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 export function Header() {
   return (
@@ -14,14 +14,15 @@ export function Header() {
             <li><Link href="/events" className="hover:text-primary-foreground/80 transition-colors">Events</Link></li>
             <li><Link href="/about" className="hover:text-primary-foreground/80 transition-colors">About</Link></li>
             <li>
-              <Button variant="secondary" className="w-full md:w-auto mt-2 md:mt-0 hover:bg-secondary/90 transition-colors">
-                Login
-              </Button>
+              <Link href="/auth/login">
+                <Button variant="secondary" className="w-full md:w-auto mt-2 md:mt-0 hover:bg-secondary/90 transition-colors">
+                  Login
+                </Button>
+              </Link>
             </li>
           </ul>
         </nav>
       </div>
     </header>
-  )
+  );
 }
-
