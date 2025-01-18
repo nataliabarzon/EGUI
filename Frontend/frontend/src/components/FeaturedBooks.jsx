@@ -58,10 +58,8 @@ export function FeaturedBooks() {
     const token = localStorage.getItem('user')
     if (token) {
       try {
-        const userObject = JSON.parse(token)
-        setUser(userObject)
-        setUserId(userObject.user.id)
-        
+        setUser(token)
+        setUserId(token.user?.id)
       } catch (err) {
         console.error('Error parsing user token:', err)
       }
@@ -160,7 +158,7 @@ export function FeaturedBooks() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredBooks.map((book) => {
             const coverImage = book.coverImage || getRandomCover()
-            const isReservedByUser = book.isReserved && book.reservedBy === user?.id
+            const isReservedByUser = book.isReserved && book.reservedBy == user?.id
 
             return (
               <Card key={book.id} className="flex flex-col justify-between hover:shadow-lg transition-shadow duration-200">

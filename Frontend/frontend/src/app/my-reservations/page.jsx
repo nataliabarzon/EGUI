@@ -23,11 +23,12 @@ const MyReservations = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('user');
+
     if (token) {
       try {
-        const userObject = JSON.parse(token);
-        setUser(userObject);
-        setUserId(userObject.user.id);
+        
+        setUser(token);
+        setUserId(token.user?.id);
       } catch (err) {
         console.error('Error parsing user token:', err);
       }

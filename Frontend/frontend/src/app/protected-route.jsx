@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children }) => {
     if (!user) {
       router.push('/auth/login');
     }
-    if (data && data.user.role !== 'librarian' && window.location.pathname.includes('admin')) {
+    if (data && data.user?.role !== 'librarian' && window.location.pathname.includes('admin')) {
       router.push('/');
     }
 
