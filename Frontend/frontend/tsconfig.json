@@ -32,7 +32,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/app/context/AuthContext.tsx", "src/middleware.js", "src/components/AddBook.jsx"  ],
   "exclude": [
     "node_modules"
   ]

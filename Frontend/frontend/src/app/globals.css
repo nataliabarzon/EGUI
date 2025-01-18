@@ -2,6 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .animate-gradient-1 {
+    background: linear-gradient(
+      45deg,
+      rgb(30, 24, 25),
+      rgb(30, 32, 41),
+      rgb(28, 28, 66)
+    );
+    background-size: 400% 400%;
+    animation: gradient 60s ease infinite;
+  }
+
+  .animate-gradient-2 {
+    background: linear-gradient(
+      -70deg,
+      rgb(28, 31, 42),
+      rgb(22, 45, 45),
+      rgb(34, 12, 49)
+    );
+    background-size: 400% 400%;
+    animation: gradient 60s ease infinite;
+    animation-delay: -5s;
+  }
+
+  .animate-gradient-3 {
+    background: linear-gradient(
+      30deg,
+      rgb(3, 1, 1),
+      rgb(9, 28, 51),
+      rgb(9, 18, 72)
+    );
+    background-size: 400% 400%;
+    animation: gradient 60s ease infinite;
+    animation-delay: -10s;
+  }
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+/* Keep the existing styles */
 html,
 body {
   max-width: 100vw;
@@ -31,6 +81,7 @@ a {
   }
 }
 
+/* Keep the existing @layer base styles */
 @layer base {
   :root {
     --radius: 0.5rem;

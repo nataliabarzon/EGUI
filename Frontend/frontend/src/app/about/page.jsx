@@ -3,9 +3,11 @@
 import { Header } from '@/components/Header'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import ProtectedRoute from '../protected-route';
 
 export default function AboutPage() {
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
@@ -53,5 +55,6 @@ export default function AboutPage() {
         </Card>
       </main>
     </div>
+    </ProtectedRoute>
   )
 }

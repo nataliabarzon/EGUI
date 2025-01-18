@@ -1,20 +1,28 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { useAuth } from './context/AuthContext';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const ProtectedRoute = ({ children }) => {
-  const { token } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!token) {
+    const user = localStorage.getItem('user');
+    const data = JSON.parse(user);
+
+    console.log(data);
+    if (!user) {
       router.push('/auth/login');
     }
-  }, [token, router]);
+    if (data && data.user.role !== 'librarian' && window.location.pathname.includes('admin')) {
+      router.push('/');
+    }
 
+  }, [router]);
+
+  
   return <>{children}</>;
 };
+
 
 export default ProtectedRoute;

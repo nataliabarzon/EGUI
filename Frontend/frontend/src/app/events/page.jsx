@@ -4,6 +4,7 @@ import { Header } from '@/components/Header'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { CalendarIcon, ClockIcon, MapPinIcon } from 'lucide-react'
+import ProtectedRoute from '../protected-route';
 
 export default function EventsPage() {
   const events = [
@@ -34,6 +35,7 @@ export default function EventsPage() {
   ]
 
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-background">
       <Header />
       <main className="container mx-auto px-4 py-8">
@@ -70,5 +72,6 @@ export default function EventsPage() {
         </div>
       </main>
     </div>
+    </ProtectedRoute>
   )
 }
