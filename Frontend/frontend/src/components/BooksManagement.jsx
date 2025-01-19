@@ -9,7 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import   AddBook  from "@/components/AddBook"
+import AddBook from "@/components/AddBook"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 const API_URL = 'https://egui.onrender.com'
 
@@ -20,10 +21,12 @@ export function BooksManagement() {
   const [newBook, setNewBook] = useState({ title: '', author: '', publisher: '', dateOfPublication: '', price: '' })
   const [editingBook, setEditingBook] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [users, setUsers] = useState([]);
   const { toast, showToast, hideToast } = useToast()
 
   useEffect(() => {
     fetchBooks()
+    fetchUsers(); 
   }, [])
 
   const fetchBooks = async () => {
@@ -40,6 +43,19 @@ export function BooksManagement() {
       setLoading(false)
     }
   }
+
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch(`${API_URL}/users`);
+      if (!response.ok) throw new Error("Failed to fetch users");
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      // Handle error appropriately, e.g., show a toast message
+    }
+  };
+
 
   const handleCreateBook = async (e) => {
     e.preventDefault()
@@ -58,22 +74,7 @@ export function BooksManagement() {
     }
   }
 
-  const handleUpdateBook = async (e) => {
-    e.preventDefault()
-    try {
-      const response = await fetch(`${API_URL}/books/${editingBook.id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editingBook)
-      })
-      if (!response.ok) throw new Error('Failed to update book')
-      await fetchBooks()
-      setEditingBook(null)
-      showToast({ title: "Success", description: "Book updated successfully", variant: "default" })
-    } catch (err) {
-      showToast({ title: "Error", description: err.message, variant: "destructive" })
-    }
-  }
+
 
   const handleDeleteBook = async (id) => {
     try {
@@ -85,51 +86,108 @@ export function BooksManagement() {
       showToast({ title: "Error", description: err.message, variant: "destructive" })
     }
   }
-
-  const handleReserveBook = async (id) => {
+  const handleUpdateBook = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/books/${id}/reserve`, { method: 'POST' })
-      if (!response.ok) throw new Error('Failed to reserve book')
-      await fetchBooks()
-      showToast({ title: "Success", description: "Book reserved successfully", variant: "default" })
+      const response = await fetch(`${API_URL}/books/${editingBook.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...editingBook,
+          // Ensure that the flags reflect the existence of reservedBy/rentedBy
+          isReserved: !!editingBook.rentedBy,
+          isRented: !!editingBook.rentedBy,
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to update book');
+      await fetchBooks();
+      setEditingBook(null);
+      showToast({ title: "Success", description: "Book updated successfully", variant: "default" });
     } catch (err) {
-      showToast({ title: "Error", description: err.message, variant: "destructive" })
+      showToast({ title: "Error", description: err.message, variant: "destructive" });
     }
-  }
-
+  };
+  
+  const handleReserveBook = async (id) => { 
+    try {
+      const response = await fetch(`${API_URL}/books/${id}/reserve`, { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Additional reservation data can be added here if needed.
+        // Typically the server should set `isReserved` to true and define a `reservedUntil`
+        // date, while leaving rental properties untouched.
+      });
+      if (!response.ok) throw new Error('Failed to reserve book');
+      await fetchBooks();
+      showToast({ title: "Success", description: "Book reserved successfully", variant: "default" });
+    } catch (err) {
+      showToast({ title: "Error", description: err.message, variant: "destructive" });
+    }
+  };
+  
   const handleRentBook = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/books/${id}/rent`, { method: 'POST' })
-      if (!response.ok) throw new Error('Failed to rent book')
-      await fetchBooks()
-      showToast({ title: "Success", description: "Book rented successfully", variant: "default" })
+      const response = await fetch(`${API_URL}/books/${id}/rent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isReserved: false,
+          reservedUntil: null,
+          rentedBy: null,
+          isRented: true,
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to rent book');
+      await fetchBooks();
+      showToast({ title: "Success", description: "Book rented successfully", variant: "default" });
     } catch (err) {
-      showToast({ title: "Error", description: err.message, variant: "destructive" })
+      showToast({ title: "Error", description: err.message, variant: "destructive" });
     }
-  }
-
+  };
+  
   const handleCancelReservation = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/books/${id}/cancel-reservation`, { method: 'PATCH' })
-      if (!response.ok) throw new Error('Failed to cancel reservation')
-      await fetchBooks()
-      showToast({ title: "Success", description: "Reservation cancelled successfully", variant: "default" })
+      const response = await fetch(`${API_URL}/books/${id}/cancel-reservation`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isReserved: false,
+          reservedUntil: null,
+          reservedBy: null,
+          // Leave rental-related properties unchanged.
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to cancel reservation');
+      await fetchBooks();
+      showToast({ title: "Success", description: "Reservation cancelled successfully", variant: "default" });
     } catch (err) {
-      showToast({ title: "Error", description: err.message, variant: "destructive" })
+      showToast({ title: "Error", description: err.message, variant: "destructive" });
     }
-  }
-
+  };
+  
   const handleReturnBook = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/books/${id}/return`, { method: 'PATCH' })
-      if (!response.ok) throw new Error('Failed to return book')
-      await fetchBooks()
-      showToast({ title: "Success", description: "Book returned successfully", variant: "default" })
+      const response = await fetch(`${API_URL}/books/${id}/return`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          // Clear both reservation and rental status upon return:
+          isReserved: false,
+          reservedUntil: null,
+          reservedBy: null,
+          isRented: false,
+          rentedUntil: null,
+          rentedBy: null,
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to return book');
+      await fetchBooks();
+      showToast({ title: "Success", description: "Book returned successfully", variant: "default" });
     } catch (err) {
-      showToast({ title: "Error", description: err.message, variant: "destructive" })
+      showToast({ title: "Error", description: err.message, variant: "destructive" });
     }
-  }
-
+  };
+  
   const filteredBooks = books.filter(book =>
     book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     book.author.toLowerCase().includes(searchTerm.toLowerCase())
@@ -234,6 +292,41 @@ export function BooksManagement() {
                                   value={editingBook?.price || ''}
                                   onChange={(e) => setEditingBook({ ...editingBook, price: e.target.value })}
                                   required
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-reservedUntil">Reserved Until</Label>
+                                <Input
+                                  id="edit-reservedUntil"
+                                  type="date"
+                                  value={editingBook?.reservedUntil?.split('T')[0] || ''}
+                                  onChange={(e) => setEditingBook({ ...editingBook, reservedUntil: e.target.value })}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-rentedBy">Taken By</Label>
+                                <Select
+                                  value={editingBook?.rentedBy?.toString() || ''}
+                                  onValueChange={(value) => setEditingBook({ ...editingBook, rentedBy: value ? Number(value) : null })}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select user" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="slt">None</SelectItem>
+                                    {users.map((user) => (
+                                      <SelectItem key={user.id} value={user.id.toString()}>{user.name}</SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-rentedUntil">Rented Until</Label>
+                                <Input
+                                  id="edit-rentedUntil"
+                                  type="date"
+                                  value={editingBook?.rentedUntil?.split('T')[0] || ''}
+                                  onChange={(e) => setEditingBook({ ...editingBook, rentedUntil: e.target.value })}
                                 />
                               </div>
                             </form>

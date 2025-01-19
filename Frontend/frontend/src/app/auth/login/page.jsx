@@ -35,7 +35,7 @@ export default function AuthPage() {
       if (response.ok) {
         localStorage.setItem('user', JSON.stringify(data))
         if(data.user.role === 'librarian') {
-          router.push('/admin')
+          router.push('/admin/books')
         } else {
           router.push('/')
         }

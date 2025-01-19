@@ -10,7 +10,6 @@ const ProtectedRoute = ({ children }) => {
     const user = localStorage.getItem('user');
     const data = JSON.parse(user);
 
-    console.log(data);
     if (!user) {
       router.push('/auth/login');
     }

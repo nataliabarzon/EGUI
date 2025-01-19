@@ -23,12 +23,11 @@ const MyReservations = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('user');
-
     if (token) {
       try {
-        
-        setUser(token);
-        setUserId(token.user?.id);
+        const tokenParsed = JSON.parse(token);
+        setUser(tokenParsed);
+        setUserId(tokenParsed.user?.id);
       } catch (err) {
         console.error('Error parsing user token:', err);
       }
@@ -54,39 +53,54 @@ const MyReservations = () => {
     }
   };
 
-  const cancelReservation = async (bookId) => {
-    setCancellingId(bookId);
+  // Only cancel reservations. If the book is rented, we don't allow cancelling/returning.
+  const cancelBooking = async (book) => {
+    // Ensure that this function is only called for a reserved book
+    if (book.isRented) return;
+
+    setCancellingId(book.id);
     try {
-      const res = await fetch(`https://egui.onrender.com/books/${bookId}/cancel-reservation`, {
-        method: 'POST',
+      const res = await fetch(`https://egui.onrender.com/books/${book.id}`, {
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.token}`,
         },
+        body: JSON.stringify({
+          isReserved: false,
+          reservedUntil: null,
+          isRented: false,
+          rentedUntil: null,
+          rentedBy: null,
+          // We leave rental-related properties intact
+        }),
       });
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      await fetchBooks(); // Refresh the book list
+      await fetchBooks(); 
       showToast("Reservation Cancelled", "Your book reservation has been successfully cancelled.");
     } catch (err) {
-      showToast("Error", `Failed to cancel reservation: ${err.message}`, "destructive");
+      showToast("Error", `Failed to cancel reservation: ${err.message}`);
     } finally {
       setCancellingId(null);
     }
   };
 
-  const showToast = (title, description, variant = "default") => {
+  const showToast = (title, description) => {
     setToastMessage({ title, description });
     setToastOpen(true);
   };
+
+  // Filter books that are either reserved or rented by the user.
+  const userBooks = books.filter(book =>
+    book.rentedBy == userId || (book.isReserved && book.reservedBy == userId)
+  );
 
   return (
     <ProtectedRoute>
       <div className="min-h-screen">
         <Header />
-        <main className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-6 text-gray-800">My Reservations</h1>
+        <main className="container mx-auto px-4 mt-8 py-8">
           {loading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(3)].map((_, index) => (
@@ -114,33 +128,47 @@ const MyReservations = () => {
           )}
           {!loading && !error && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {books
-                .filter(book => book.rentedBy == userId)
-                .map(book => (
-                  <Card key={book.id} className="overflow-hidden transition-shadow duration-300 ease-in-out hover:shadow-lg">
-                    <CardHeader className="bg-primary/10">
-                      <CardTitle className="flex items-center text-lg font-semibold text-primary">
-                        <BookOpenIcon className="mr-2 h-5 w-5" />
-                        {book.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-4">
-                      <p className="flex items-center text-sm text-gray-600 mb-2">
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        Reserved until: {new Date(book.reservedUntil).toLocaleDateString()}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        ID: {book.id}
-                      </p>
-                    </CardContent>
-                    <CardFooter>
+              {userBooks.map(book => (
+                <Card
+                  key={book.id}
+                  className={`overflow-hidden transition-shadow duration-300 ease-in-out hover:shadow-lg ${book.isRented ? 'bg-blue-50' : 'bg-green-50'}`}
+                >
+                  <CardHeader className={book.isRented ? 'bg-blue-950' : 'bg-green-950'}>
+                    <CardTitle className="flex items-center text-lg font-semibold text-primary">
+                      <BookOpenIcon className="mr-2 h-5 w-5" />
+                      {book.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <p className="flex items-center text-sm text-gray-600 mb-2">
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {book.isRented 
+                        ? 'Rented until: ' + new Date(book.rentedUntil).toLocaleDateString('en-GB')
+                        : 'Reserved until: ' + new Date(book.reservedUntil).toLocaleDateString('en-GB')
+                      }
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    {book.isRented ? (
+                      // Calculate and display how many days are left for the rented book.
+                      <div className="w-full text-center text-sm text-gray-600">
+                        {(() => {
+                          const now = new Date();
+                          const dueDate = new Date(book.rentedUntil);
+                          const daysLeft = Math.ceil((dueDate - now) / (1000 * 60 * 60 * 24));
+                          return daysLeft > 0 
+                            ? `Due in ${daysLeft} day(s)` 
+                            : 'Due date passed';
+                        })()}
+                      </div>
+                    ) : (
                       <Button 
                         variant="destructive" 
                         className="w-full"
-                        onClick={() => cancelReservation(book.id)}
-                        disabled={cancellingId === book.id}
+                        onClick={() => cancelBooking(book)}
+                        disabled={cancellingId == book.id}
                       >
-                        {cancellingId === book.id ? (
+                        {cancellingId == book.id ? (
                           <>
                             <Skeleton className="h-5 w-5 mr-2" />
                             Cancelling...
@@ -152,15 +180,16 @@ const MyReservations = () => {
                           </>
                         )}
                       </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
+                    )}
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
           )}
-          {!loading && !error && books.filter(book => book.rentedBy == userId).length === 0 && (
+          {!loading && !error && userBooks.length == 0 && (
             <Card>
               <CardContent className="text-center py-8">
-                <p className="text-gray-600">You don't have any reservations yet.</p>
+                <p className="text-gray-600">You don't have any reservations or rentals yet.</p>
               </CardContent>
             </Card>
           )}

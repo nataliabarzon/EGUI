@@ -33,7 +33,6 @@ export const AuthProvider = ({ children }) => {
   }, [token, router]);
   const userObject = JSON.parse(token);
 
-  console.log(userObject?.user?.role);
 
   return (
     <AuthContext.Provider value={{ userObject }}>

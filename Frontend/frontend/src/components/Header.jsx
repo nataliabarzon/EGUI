@@ -16,7 +16,7 @@ export function Header() {
   const isAdmin = pathname.startsWith('/admin');
 
   return (
-    <header className="bg-primary text-primary-foreground shadow-md">
+    <header className="bg-blue-950 text-primary-foreground shadow-md">
       <div className="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
         <Link
           href={isAdmin ? '/admin' : '/'}
