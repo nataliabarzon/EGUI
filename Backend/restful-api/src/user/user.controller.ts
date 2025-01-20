@@ -73,7 +73,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  @Roles(Role.Librarian)
+
   @ApiOperation({ summary: 'Delete a user' })
   @ApiParam({ name: 'id', type: 'number' })
   async delete(@Param('id') id: number): Promise<void> {
