@@ -1,4 +1,4 @@
-import {Controller,Get,Post,Body,Param,Delete,Put,UseGuards} from '@nestjs/common';
+import {Controller,Get,Post,Body,Param,Delete,Patch,UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User as UserEntity } from './user.entity';
 import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiBearerAuth} from '@nestjs/swagger';
@@ -50,7 +50,7 @@ export class UserController {
     return await this.userService.create(newUser);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Update a user' })
   @ApiParam({ name: 'id', type: 'number' })
   @ApiBody({ type: UpdateUserDto })

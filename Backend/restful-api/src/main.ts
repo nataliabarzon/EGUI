@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({ //cors piszesz jak chcesz polaczyc back z frontem
-    origin: 'http://localhost:3000', 
+    origin: 'http://localhost:3001', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization,X-CSRF-TOKEN',
     credentials: true, 
@@ -23,6 +23,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
