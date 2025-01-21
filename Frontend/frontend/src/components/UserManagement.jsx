@@ -24,7 +24,6 @@ export function UserManagement() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [newUser, setNewUser] = useState({ name: '', email: '', role: '' });
   const [editingUser, setEditingUser] = useState(null);
   const [toast, setToast] = useState({ open: false, title: '', description: '', variant: 'default' });
 
@@ -47,9 +46,8 @@ export function UserManagement() {
       if (!response.ok) throw new Error('Failed to fetch users');
       const data = await response.json();
       const usersWithPictures = data.map((user) => ({
-        ...user,
-        profilePicture: PROFILE_PICTURES[Math.floor(Math.random() * PROFILE_PICTURES.length)]
-      }));
+        ...user   
+         }));
       setUsers(usersWithPictures);
     } catch (err) {
       setError(err.message || 'An error occurred');
@@ -59,32 +57,14 @@ export function UserManagement() {
     }
   };
 
-  const handleCreateUser = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${API_URL}/users`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...newUser,
-          profilePicture: PROFILE_PICTURES[Math.floor(Math.random() * PROFILE_PICTURES.length)]
-        })
-      });
-      if (!response.ok) throw new Error('Failed to create user');
-      await fetchUsers();
-      setNewUser({ name: '', email: '', role: '' });
-      showToast('Success', 'User created successfully');
-    } catch (err) {
-      showToast('Error', err.message || 'Failed to create user', 'destructive');
-    }
-  };
+
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     if (!editingUser) return;
     try {
       const response = await fetch(`${API_URL}/users/${editingUser.id}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editingUser)
       });
@@ -98,8 +78,9 @@ export function UserManagement() {
   };
 
   const handleDeleteUser = async (id) => {
+    console.log('delete user', id);
     try {
-      const response = await fetch(`${API_URL}/users/${id}`, { method: 'DELETE' });
+      const response = await fetch(`${API_URL}/users/${id}`, { method: 'DELETE',  headers: { 'Content-Type': 'application/json' }, });
       if (!response.ok) throw new Error('Failed to delete user');
       await fetchUsers();
       showToast('Success', 'User deleted successfully');
@@ -116,49 +97,7 @@ export function UserManagement() {
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold mb-6">User Management</h1>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Add New User</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleCreateUser} className="space-y-4">
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <Label htmlFor="name">Name</Label>
-                  <Input
-                    id="name"
-                    value={newUser.name}
-                    onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="role">Role</Label>
-                  <Input
-                    id="role"
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                    required
-                  />
-                </div>
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter>
-            <Button type="submit" onClick={handleCreateUser}>Add User</Button>
-          </CardFooter>
-        </Card>
-
+      
         <Card>
           <CardHeader>
             <CardTitle>User List</CardTitle>
@@ -208,6 +147,7 @@ export function UserManagement() {
                                   required
                                 />
                               </div>
+                          
                               <div>
                                 <Label htmlFor="edit-email">Email</Label>
                                 <Input
@@ -224,6 +164,19 @@ export function UserManagement() {
                                   id="edit-role"
                                   value={editingUser?.role || ''}
                                   onChange={(e) => setEditingUser((prev) => prev ? { ...prev, role: e.target.value } : null)}
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-password">Password</Label>
+                                <Input
+                                  id="edit-password"
+                                  value={editingUser?.password || ''}
+                                  placeholder="Enter new password"
+                                  type="password"
+                                  className="w-[30%]" // Limits the input to a maximum of 5 characters (dots in password fields)
+
+                                  onChange={(e) => setEditingUser((prev) => prev ? { ...prev, password: e.target.value } : null)}
                                   required
                                 />
                               </div>

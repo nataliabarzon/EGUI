@@ -88,7 +88,18 @@ export default function ReservationsPage() {
 
   const handleReturnBook = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/books/${id}/return`, { method: 'PATCH' })
+      const response = await fetch(`${API_URL}/books/${id}/return`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          isReserved: false,
+          reservedUntil: null,
+          reservedBy: null,
+          isRented: false,
+          rentedUntil: null,
+          rentedBy: null,
+        }),
+      })
       if (!response.ok) throw new Error('Failed to return book')
       await fetchReservations()
       showToast({ title: "Success", description: "Book returned successfully", variant: "default" })
@@ -156,6 +167,22 @@ export default function ReservationsPage() {
                           <form onSubmit={handleUpdateReservation} className="space-y-4">
                             <div>
                               <Label htmlFor="edit-takenBy">Taken By</Label>
+                            {book.isReserved || book.isRented ?  
+                            <Select
+                                value={(book.reservedBy || book.rentedBy)?.toString()}
+                                onValueChange={(value) => setEditingReservation({ ...editingReservation, reservedBy: Number(value), rentedBy: Number(value) })}
+                                disabled
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select user" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {users.map((user) => (
+                                    <SelectItem key={user.id} value={user.id.toString()}>{user.email}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              :
                               <Select
                                 value={(book.reservedBy || book.rentedBy)?.toString()}
                                 onValueChange={(value) => setEditingReservation({ ...editingReservation, reservedBy: Number(value), rentedBy: Number(value) })}
@@ -169,6 +196,7 @@ export default function ReservationsPage() {
                                   ))}
                                 </SelectContent>
                               </Select>
+} 
                             </div>
                             <div>
                               <Label htmlFor="edit-until">Rented Until</Label>
@@ -185,9 +213,7 @@ export default function ReservationsPage() {
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>
-                      {book.isReserved && (
-                        <Button variant="secondary" size="sm" onClick={() => handleCancelReservation(book.id)}>Cancel Reservation</Button>
-                      )}
+                   
                       {book.isRented && (
                         <Button variant="secondary" size="sm" onClick={() => handleReturnBook(book.id)}>Return Book</Button>
                       )}

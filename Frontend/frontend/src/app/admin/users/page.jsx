@@ -5,10 +5,10 @@ import React from 'react';
 
 const UsersPage = () => {
     return (
-            <ProtectedRoute>
-            <Header />
-            <UserManagement />
-                </ProtectedRoute>
+    <ProtectedRoute>
+        <Header />
+        <UserManagement />
+    </ProtectedRoute>
     );
 };
 
