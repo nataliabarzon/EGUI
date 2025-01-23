@@ -63,7 +63,7 @@ export default function AuthPage() {
 
       const data = await response.json()
       if (response.ok) {
-        localStorage.setItem('user', JSON.stringify(data.token))
+        localStorage.setItem('user', JSON.stringify(data))
         localStorage.setItem('userInfo', JSON.stringify(data.user))
         router.push('/')
       } else {

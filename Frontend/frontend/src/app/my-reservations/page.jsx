@@ -14,7 +14,7 @@ const MyReservations = () => {
   const [error, setError] = useState(null);
   const [books, setBooks] = useState([]);
   const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState();
   const [cancellingId, setCancellingId] = useState(null);
 
   // Toast state
@@ -27,11 +27,14 @@ const MyReservations = () => {
       try {
         const tokenParsed = JSON.parse(token);
         setUser(tokenParsed);
+        console.log(tokenParsed.user.id);
         setUserId(tokenParsed.user?.id);
+        console.log(userId)
       } catch (err) {
         console.error('Error parsing user token:', err);
       }
     }
+    console.log(userBooks)
   }, []);
 
   useEffect(() => {
@@ -93,7 +96,7 @@ const MyReservations = () => {
 
   // Filter books that are either reserved or rented by the user.
   const userBooks = books.filter(book =>
-    book.rentedBy == userId || (book.isReserved && book.reservedBy == userId)
+    book.rentedBy == userId 
   );
 
   return (
@@ -186,7 +189,7 @@ const MyReservations = () => {
               ))}
             </div>
           )}
-          {!loading && !error && userBooks.length == 0 && (
+          { userBooks.length === 0 && (
             <Card>
               <CardContent className="text-center py-8">
                 <p className="text-gray-600">You don't have any reservations or rentals yet.</p>
